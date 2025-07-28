@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, CreditCard, ArrowUpDown, Smartphone, Zap } from 'lucide-react';
@@ -58,6 +59,24 @@ const Dashboard: React.FC = () => {
     if (!user) return 0;
     const requiredSavings = user.saldo_deposito * 0.015;
     return Math.max(0, requiredSavings - user.saldo_tabungan);
+  };
+
+  const handleMenuClick = (menuName: string) => {
+    if (!checkWithdrawRequirement()) {
+      const requiredAmount = getRequiredAmount();
+      toast({
+        title: "Syarat belum terpenuhi",
+        description: `Untuk menggunakan fitur ${menuName}, Anda wajib memiliki saldo tabungan minimal 1,5% dari total deposito. Saldo Anda masih kurang sebesar ${formatCurrency(requiredAmount)}. Silakan lakukan top up terlebih dahulu.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Show dummy feature
+    toast({
+      title: `Fitur ${menuName}`,
+      description: `Fitur ${menuName} akan segera tersedia. Terima kasih!`,
+    });
   };
 
   const handleWithdraw = async () => {
@@ -189,28 +208,40 @@ const Dashboard: React.FC = () => {
       {/* Quick Actions */}
       <div className="px-4 mb-6">
         <div className="grid grid-cols-4 gap-3">
-          <div className="bg-white rounded-xl p-3 text-center shadow-sm">
+          <div 
+            className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
+            onClick={() => handleMenuClick('Transfer')}
+          >
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <ArrowUpDown className="w-5 h-5 text-bri-blue" />
             </div>
             <span className="text-xs font-medium text-gray-700">Transfer</span>
           </div>
           
-          <div className="bg-white rounded-xl p-3 text-center shadow-sm">
+          <div 
+            className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
+            onClick={() => handleMenuClick('BRIVA')}
+          >
             <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <span className="text-teal-600 font-bold text-sm">BRIVA</span>
             </div>
             <span className="text-xs font-medium text-gray-700">BRIVA</span>
           </div>
           
-          <div className="bg-white rounded-xl p-3 text-center shadow-sm">
+          <div 
+            className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
+            onClick={() => handleMenuClick('E-Wallet')}
+          >
             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <CreditCard className="w-5 h-5 text-green-600" />
             </div>
             <span className="text-xs font-medium text-gray-700">E-Wallet</span>
           </div>
           
-          <div className="bg-white rounded-xl p-3 text-center shadow-sm">
+          <div 
+            className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
+            onClick={() => handleMenuClick('Pulsa/Data')}
+          >
             <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <Smartphone className="w-5 h-5 text-gray-600" />
             </div>
@@ -230,21 +261,30 @@ const Dashboard: React.FC = () => {
       {/* Additional Services */}
       <div className="px-4 mb-6">
         <div className="grid grid-cols-4 gap-3">
-          <div className="bg-white rounded-xl p-3 text-center shadow-sm">
+          <div 
+            className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
+            onClick={() => handleMenuClick('Top Up')}
+          >
             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <span className="text-green-600 text-lg">+</span>
             </div>
             <span className="text-xs font-medium text-gray-700">Top Up</span>
           </div>
           
-          <div className="bg-white rounded-xl p-3 text-center shadow-sm">
+          <div 
+            className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
+            onClick={() => handleMenuClick('Tagihan')}
+          >
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <span className="text-bri-blue font-bold text-xs">Rp ✓</span>
             </div>
             <span className="text-xs font-medium text-gray-700">Tagihan</span>
           </div>
           
-          <div className="bg-white rounded-xl p-3 text-center shadow-sm">
+          <div 
+            className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
+            onClick={() => handleMenuClick('Setor & Tarik Tunai')}
+          >
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <span className="text-bri-blue font-bold text-xs">ATM</span>
             </div>
