@@ -52,6 +52,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				bri: {
+					blue: 'hsl(var(--bri-blue))',
+					'dark-blue': 'hsl(var(--bri-dark-blue))',
+					'light-blue': 'hsl(var(--bri-light-blue))',
+					orange: 'hsl(var(--bri-orange))',
+					gray: 'hsl(var(--bri-gray))'
+				},
+				income: 'hsl(var(--income-green))',
+				expense: 'hsl(var(--expense-red))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
