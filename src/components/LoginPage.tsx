@@ -45,8 +45,8 @@ const LoginPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-bri-blue to-bri-dark-blue flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="w-16 h-16 bg-bri-blue rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-xl">BRI</span>
+          <div className="w-24 h-16 flex items-center justify-center mx-auto mb-4">
+            <img src="/lovable-uploads/79eddd1e-d418-43b6-8c4c-5abdf623af69.png" alt="BRI Logo" className="w-full h-full object-contain" />
           </div>
           <CardTitle className="text-2xl font-bold text-bri-dark-blue">
             Deposit BRI
@@ -94,11 +94,6 @@ const LoginPage: React.FC = () => {
               {isLoading ? 'Masuk...' : 'Masuk'}
             </Button>
           </form>
-          <div className="mt-6 p-4 bg-bri-light-blue rounded-lg">
-            <p className="text-sm text-bri-dark-blue font-medium">Demo Account:</p>
-            <p className="text-xs text-muted-foreground">Username: Siti Aminah</p>
-            <p className="text-xs text-muted-foreground">PIN: 112233</p>
-          </div>
         </CardContent>
       </Card>
     </div>
