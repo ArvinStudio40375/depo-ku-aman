@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, CreditCard, ArrowUpDown, Smartphone, Zap } from 'lucide-react';
 import { TransferDialog } from './TransferDialog';
+import NotificationDropdown from '@/components/NotificationDropdown';
 
 const Dashboard: React.FC = () => {
   const { user, logout, updateBalance, refreshUser } = useAuth();
@@ -150,12 +151,7 @@ const Dashboard: React.FC = () => {
             </div>
             <span className="text-sm font-medium">{formatTime(currentTime)}</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-bri-orange rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-bold">39</span>
-            </div>
-            <span className="text-sm">Pusat Bantuan</span>
-          </div>
+          <NotificationDropdown />
         </div>
         <h1 className="text-lg font-medium">
           {getGreeting()}, {user.username.split(' ')[0]}

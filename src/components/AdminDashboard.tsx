@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Plus, UserPlus, Send, Wallet } from 'lucide-react';
+import AddBalanceDialog from '@/components/AddBalanceDialog';
+import AddUserDialog from '@/components/AddUserDialog';
+import SendNotificationDialog from '@/components/SendNotificationDialog';
 
 interface UserData {
   id: string;
@@ -21,6 +25,9 @@ const AdminDashboard: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddBalanceOpen, setIsAddBalanceOpen] = useState(false);
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isSendNotificationOpen, setIsSendNotificationOpen] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -165,6 +172,51 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </div>
 
+        {/* Management Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setIsAddBalanceOpen(true)}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-bri-blue/10 rounded-lg">
+                  <Wallet className="h-5 w-5 text-bri-blue" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Tambah Saldo</p>
+                  <p className="text-xs text-muted-foreground">Kelola saldo pengguna</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setIsAddUserOpen(true)}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-green-500/10 rounded-lg">
+                  <UserPlus className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Tambah Pengguna</p>
+                  <p className="text-xs text-muted-foreground">Buat akun baru</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setIsSendNotificationOpen(true)}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-500/10 rounded-lg">
+                  <Send className="h-5 w-5 text-orange-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Kirim Notifikasi</p>
+                  <p className="text-xs text-muted-foreground">Informasi ke pengguna</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Search */}
         <Card>
           <CardHeader>
@@ -227,6 +279,23 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Dialogs */}
+      <AddBalanceDialog 
+        isOpen={isAddBalanceOpen}
+        onClose={() => setIsAddBalanceOpen(false)}
+        onSuccess={fetchUsers}
+      />
+      <AddUserDialog 
+        isOpen={isAddUserOpen}
+        onClose={() => setIsAddUserOpen(false)}
+        onSuccess={fetchUsers}
+      />
+      <SendNotificationDialog 
+        isOpen={isSendNotificationOpen}
+        onClose={() => setIsSendNotificationOpen(false)}
+        onSuccess={() => {}}
+      />
     </div>
   );
 };
