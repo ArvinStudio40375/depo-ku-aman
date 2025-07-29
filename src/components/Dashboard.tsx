@@ -7,6 +7,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, CreditCard, ArrowUpDown, Smartphone, Zap } from 'lucide-react';
+import { TransferDialog } from './TransferDialog';
 
 const Dashboard: React.FC = () => {
   const { user, logout, updateBalance, refreshUser } = useAuth();
@@ -15,6 +16,7 @@ const Dashboard: React.FC = () => {
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -210,7 +212,18 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-4 gap-3">
           <div 
             className="bg-white rounded-xl p-3 text-center shadow-sm cursor-pointer hover:bg-gray-50"
-            onClick={() => handleMenuClick('Transfer')}
+            onClick={() => {
+              if (!checkWithdrawRequirement()) {
+                const requiredAmount = getRequiredAmount();
+                toast({
+                  title: "Syarat belum terpenuhi",
+                  description: `Untuk menggunakan fitur Transfer, Anda wajib memiliki saldo tabungan minimal 1,5% dari total deposito. Saldo Anda masih kurang sebesar ${formatCurrency(requiredAmount)}. Silakan lakukan top up terlebih dahulu.`,
+                  variant: "destructive",
+                });
+                return;
+              }
+              setIsTransferOpen(true);
+            }}
           >
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <ArrowUpDown className="w-5 h-5 text-bri-blue" />
@@ -333,6 +346,12 @@ const Dashboard: React.FC = () => {
           </Dialog>
         </div>
       </div>
+
+      {/* Transfer Dialog */}
+      <TransferDialog 
+        open={isTransferOpen} 
+        onOpenChange={setIsTransferOpen} 
+      />
 
       {/* Footer - Hidden Admin Access */}
       <div className="mt-8 bg-bri-dark-blue text-white text-center py-6">
