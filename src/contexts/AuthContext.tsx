@@ -32,12 +32,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
 
-      // Set session configuration for RLS
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_user',
-        setting_value: username
-      });
-
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -45,9 +39,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('pin', pin)
         .maybeSingle();
 
-      if (error || !data) {
+      if (error) {
+        console.error('Login database error:', error);
         return false;
       }
+
+      if (!data) {
+        console.log('User not found or wrong credentials');
+        return false;
+      }
+
+      // Set session configuration for RLS after successful query
+      await supabase.rpc('set_config', {
+        setting_name: 'app.current_user',
+        setting_value: username
+      });
 
       setUser(data);
       localStorage.setItem('currentUser', JSON.stringify(data));
