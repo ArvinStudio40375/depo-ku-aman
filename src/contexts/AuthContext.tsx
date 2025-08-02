@@ -25,6 +25,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, pin: string): Promise<boolean> => {
     try {
+      // Check for admin login
+      if (username === 'admin' && pin === '112233') {
+        setIsAdmin(true);
+        localStorage.setItem('isAdmin', 'true');
+        return true;
+      }
+
       // Set session configuration for RLS
       await supabase.rpc('set_config', {
         setting_name: 'app.current_user',
