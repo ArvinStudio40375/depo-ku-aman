@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .select('*')
         .eq('username', username)
         .eq('pin', pin)
-        .single();
+        .maybeSingle();
 
       if (error || !data) {
         return false;
