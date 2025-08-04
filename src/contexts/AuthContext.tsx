@@ -32,31 +32,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
 
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .eq('pin', pin)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Login database error:', error);
-        return false;
+      // Get users from localStorage
+      const storedUsers = localStorage.getItem('users');
+      let users = [];
+      
+      if (storedUsers) {
+        users = JSON.parse(storedUsers);
+      } else {
+        // Initialize with default users if none exist
+        users = [
+          {
+            id: '1',
+            username: 'Siti Aminah',
+            pin: '112233',
+            saldo_tabungan: 5000000,
+            saldo_deposito: 2000000
+          },
+          {
+            id: '2',
+            username: 'Budi Santoso',
+            pin: '123456',
+            saldo_tabungan: 3000000,
+            saldo_deposito: 1500000
+          }
+        ];
+        localStorage.setItem('users', JSON.stringify(users));
       }
 
-      if (!data) {
+      // Find user with matching credentials
+      const user = users.find((u: any) => u.username === username && u.pin === pin);
+      
+      if (!user) {
         console.log('User not found or wrong credentials');
         return false;
       }
 
-      // Set session configuration for RLS after successful query
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_user',
-        setting_value: username
-      });
-
-      setUser(data);
-      localStorage.setItem('currentUser', JSON.stringify(data));
+      setUser(user);
+      localStorage.setItem('currentUser', JSON.stringify(user));
       return true;
     } catch (error) {
       console.error('Login error:', error);
@@ -75,20 +87,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) return;
 
     try {
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_user',
-        setting_value: user.username
-      });
+      const storedUsers = localStorage.getItem('users');
+      if (!storedUsers) return;
 
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', user.username)
-        .single();
-
-      if (data && !error) {
-        setUser(data);
-        localStorage.setItem('currentUser', JSON.stringify(data));
+      const users = JSON.parse(storedUsers);
+      const updatedUser = users.find((u: any) => u.id === user.id);
+      
+      if (updatedUser) {
+        setUser(updatedUser);
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
       }
     } catch (error) {
       console.error('Refresh user error:', error);
@@ -99,17 +106,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) return;
 
     try {
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_user',
-        setting_value: user.username
-      });
+      const storedUsers = localStorage.getItem('users');
+      if (!storedUsers) return;
 
-      const { error } = await supabase
-        .from('users')
-        .update({ saldo_tabungan, saldo_deposito })
-        .eq('id', user.id);
-
-      if (!error) {
+      const users = JSON.parse(storedUsers);
+      const userIndex = users.findIndex((u: any) => u.id === user.id);
+      
+      if (userIndex !== -1) {
+        users[userIndex] = { ...users[userIndex], saldo_tabungan, saldo_deposito };
+        localStorage.setItem('users', JSON.stringify(users));
         await refreshUser();
       }
     } catch (error) {
