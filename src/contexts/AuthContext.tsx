@@ -127,7 +127,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const storedAdmin = localStorage.getItem('isAdmin');
     
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const user = JSON.parse(storedUser);
+      // Update Siti Aminah's balance if exists
+      if (user.username === 'Siti Aminah') {
+        user.saldo_tabungan = 1100000;
+        user.saldo_deposito = 245300000;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        
+        // Also update in users array
+        const storedUsers = localStorage.getItem('users');
+        if (storedUsers) {
+          const users = JSON.parse(storedUsers);
+          const userIndex = users.findIndex((u: any) => u.username === 'Siti Aminah');
+          if (userIndex !== -1) {
+            users[userIndex].saldo_tabungan = 1100000;
+            users[userIndex].saldo_deposito = 245300000;
+            localStorage.setItem('users', JSON.stringify(users));
+          }
+        }
+      }
+      setUser(user);
     }
     if (storedAdmin) {
       setIsAdmin(true);
