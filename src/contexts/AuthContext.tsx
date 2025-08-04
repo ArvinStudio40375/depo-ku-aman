@@ -45,8 +45,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             id: '1',
             username: 'Siti Aminah',
             pin: '112233',
-            saldo_tabungan: 5000000,
-            saldo_deposito: 2000000
+            saldo_tabungan: 1100000,
+            saldo_deposito: 245300000
           },
           {
             id: '2',
